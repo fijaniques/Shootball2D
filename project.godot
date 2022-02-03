@@ -63,6 +63,13 @@ m_mouse={
 "events": [  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="LTeam"
+2d_physics/layer_2="RTeam"
+2d_physics/layer_3="Ball"
+2d_physics/layer_4="Goal"
+
 [physics]
 
 common/enable_pause_aware_picking=true
