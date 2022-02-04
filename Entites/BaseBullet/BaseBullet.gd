@@ -6,6 +6,7 @@ var spinCalc = Vector2.ZERO
 
 func _physics_process(delta):
 	_trajectory(delta)
+	
 
 func _trajectory(delta):
 	position = position.move_toward(destination, speed * delta)

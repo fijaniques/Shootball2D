@@ -69,6 +69,7 @@ m_mouse={
 2d_physics/layer_2="RTeam"
 2d_physics/layer_3="Ball"
 2d_physics/layer_4="Goal"
+2d_physics/layer_5="Bullet"
 
 [physics]
 

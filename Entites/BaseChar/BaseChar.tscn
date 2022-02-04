@@ -28,3 +28,11 @@ position = Vector2( 64, 0 )
 
 [node name="Detination" type="Position2D" parent="Gun"]
 position = Vector2( 1e+09, 0 )
+
+[node name="Timers" type="Node2D" parent="."]
+
+[node name="Dash" type="Timer" parent="Timers"]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="timeout" from="Timers/Dash" to="." method="_on_Dash_timeout"]
