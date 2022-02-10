@@ -1,17 +1,21 @@
 extends KinematicBody2D
 
 var gravity :float = 1000
-var movement = Vector2.ZERO
+var velocity = Vector2.ZERO
 
-var bounce :float = 0.6
+var bounce :float = 0.8
 
 func _ready():
-	movement = Vector2(100,-100)
 	global_position = get_viewport_rect().size / 2
 
 func _physics_process(delta):
-	movement.y += delta * gravity
-	
-	var collision = move_and_collide(movement * delta)
-	if collision:
-		movement = movement.bounce(collision.normal) * bounce
+	velocity.y += delta * gravity
+	_slide_collision_handler()
+
+func _slide_collision_handler(): #move and slide
+	velocity = move_and_slide(velocity)
+	velocity = move_and_slide(velocity)
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		var body = collision.collider
+		print("Collided with: ", body.name)
