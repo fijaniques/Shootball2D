@@ -32,5 +32,5 @@ func _reset():
 	get_tree().reload_current_scene()
 
 func _ball_spawn():
-	var ballInstance = ball2.instance()
+	var ballInstance = ball.instance()
 	add_child(ballInstance)

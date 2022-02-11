@@ -20,7 +20,7 @@ export (float) var acceleration = 0.2
 export (float) var friction = 0.2
 export (float) var jumpForce = -1000
 export (float) var dashForce = 1.5
-export (float) var inertia = 1
+export (float) var inertia = 100 
 var dashing :bool = false
 var canDash :bool = true
 var canMove :bool = true
@@ -65,12 +65,12 @@ func _movement(delta):
 			velocity.x = lerp(velocity.x, 0, friction)
 
 	velocity.y += GRAVITY * delta
-	velocity = move_and_slide(velocity, UP)
+	velocity = move_and_slide(velocity, UP, false, 4, PI/4, false)
 
-#	for index in get_slide_count():
-#		var collision = get_slide_collision(index)
-#		if(collision.collider.is_in_group("bodies")):
-#			collision.collider.apply_central_impulse(collision.collider.normal * inertia)
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		if(collision.collider.name == "Ball"):
+			collision.collider.apply_central_impulse(collision.remainder * inertia)
 
 func _jump():
 	if(Input.is_action_just_pressed("w") and is_on_floor() and !dashing):
