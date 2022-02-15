@@ -5,8 +5,8 @@ onready var rGoal = $Goals/RGoal
 onready var char1 = $BaseChar
 
 var ball = preload("res://Entites/Ball/Ball.tscn")
-var ball2 = preload("res://Entites/Ball2/Ball2.tscn")
-
+var ball2 = preload("res://Tests/Ball/TestBall.tscn")
+signal the_ball
 
 func _ready():
 	_positions()
@@ -32,5 +32,6 @@ func _reset():
 	get_tree().reload_current_scene()
 
 func _ball_spawn():
-	var ballInstance = ball.instance()
+	var ballInstance = ball2.instance()
 	add_child(ballInstance)
+	emit_signal("the_ball", ballInstance)

@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 var bullet = preload("res://Entites/BaseBullet/BaseBullet.tscn")
 var bomb = preload("res://Entites/Attacks/Bomb/Bomb.tscn")
+var theBall
 
 onready var gun = $Gun
 onready var gunPoint = $Gun/Position2D
@@ -9,6 +10,8 @@ onready var gunDestination = $Gun/Detination
 onready var dashTimer = $Timers/Dash
 onready var dodgeTimer = $Timers/Dodge
 onready var dodgeCD = $Timers/DodgeCD
+onready var ray = $Ray
+onready var forceDir = $Ray/ForceDirection
 
 const UP = Vector2.UP
 const GRAVITY :float = 2000.00
@@ -20,7 +23,7 @@ export (float) var acceleration = 0.2
 export (float) var friction = 0.2
 export (float) var jumpForce = -1000
 export (float) var dashForce = 1.5
-export (float) var inertia = 100 
+export (float) var inertia = 100
 var dashing :bool = false
 var canDash :bool = true
 var canMove :bool = true
@@ -34,9 +37,11 @@ var initialPosition
 func _ready():
 	initialPosition = global_position
 	dashForce = speed * 10
+	_signal_connection()
 
 func _process(delta):
 	_aim()
+#	_push_ball()
 
 func _physics_process(delta):
 	_movement(delta)
@@ -69,7 +74,7 @@ func _movement(delta):
 
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
-		if(collision.collider.name == "Ball"):
+		if(collision.collider.is_in_group("bodies")):
 			collision.collider.apply_central_impulse(collision.remainder * inertia)
 
 func _jump():
@@ -78,6 +83,7 @@ func _jump():
 
 func _aim():
 	gun.look_at(get_global_mouse_position())
+	ray.look_at(theBall.global_position)
 
 func _shoot():
 	var bulletInstance = bullet.instance()
@@ -117,6 +123,14 @@ func _dodge(delta):
 		canDodge = false
 		dodgeTimer.start()
 
+func _the_ball(ball):
+	theBall = ball
+
+func _push_ball():
+	if(forceDir.is_colliding()):
+		var collider = forceDir.get_collider()
+		collider.add_force()
+
 #TIMERS
 func _on_Dash_timeout():
 	dashing = false
@@ -133,3 +147,11 @@ func _on_Dodge_timeout():
 func _on_DodgeCD_timeout():
 	$Collision.disabled = false
 	canDodge = true
+
+#SIGNALS
+func _signal_connection():
+	get_tree().current_scene.connect("the_ball", self, "_the_ball")
+
+
+func _on_BallDetect_body_entered(body):
+	body.velocity = (body.global_position - global_position) / 2
