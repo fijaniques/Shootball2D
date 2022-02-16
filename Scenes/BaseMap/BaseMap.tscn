@@ -100,4 +100,4 @@ lTeam = true
 position = Vector2( 3680, 1088 )
 
 [node name="BaseChar" parent="." instance=ExtResource( 1 )]
-position = Vector2( 1032, 1552 )
+position = Vector2( 1872, 1840 )

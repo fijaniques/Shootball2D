@@ -23,7 +23,8 @@ export (float) var acceleration = 0.2
 export (float) var friction = 0.2
 export (float) var jumpForce = -1000
 export (float) var dashForce = 1.5
-export (float) var inertia = 100
+export (float) var inertia = 100 
+var pushForce = Vector2.ZERO
 var dashing :bool = false
 var canDash :bool = true
 var canMove :bool = true
@@ -41,7 +42,6 @@ func _ready():
 
 func _process(delta):
 	_aim()
-#	_push_ball()
 
 func _physics_process(delta):
 	_movement(delta)
@@ -66,8 +66,10 @@ func _movement(delta):
 	if(canMove):
 		if(hDir != 0):
 			velocity.x = lerp(velocity.x, hDir * speed * delta, acceleration)
+			pushForce.x = lerp(hDir, 0.25, acceleration)
 		else:
 			velocity.x = lerp(velocity.x, 0, friction)
+			pushForce.x = lerp(0.25, hDir, friction)
 
 	velocity.y += GRAVITY * delta
 	velocity = move_and_slide(velocity, UP, false, 4, PI/4, false)
@@ -80,6 +82,9 @@ func _movement(delta):
 func _jump():
 	if(Input.is_action_just_pressed("w") and is_on_floor() and !dashing):
 		velocity.y = jumpForce
+		pushForce.y = 0.25
+	else:
+		pushForce.y = lerp(0.25, 1, friction)
 
 func _aim():
 	gun.look_at(get_global_mouse_position())
@@ -151,7 +156,3 @@ func _on_DodgeCD_timeout():
 #SIGNALS
 func _signal_connection():
 	get_tree().current_scene.connect("the_ball", self, "_the_ball")
-
-
-func _on_BallDetect_body_entered(body):
-	body.velocity = (body.global_position - global_position) / 2
